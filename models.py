@@ -19,7 +19,15 @@ class Services(MongoModel):
     created_on = fields.DateTimeField(verbose_name="Date of service creation")
 
 
-class User(MongoModel):
+class Users(MongoModel):
+    user_id = fields.ObjectIdField(primary_key=True)
     username = fields.CharField(verbose_name="User Name", max_length=50)
     service_registered_for = fields.ObjectIdField(verbose_name="Service ID")
     created_on = fields.DateTimeField(verbose_name="Date of user creation")
+
+# #
+# insert = Users(
+#     username="Olamilekan",
+#     service_registered_for= ObjectId("5868a60cbba4a24b01f7a5a2"),
+#     created_on=datetime.datetime.now()
+# ).save()

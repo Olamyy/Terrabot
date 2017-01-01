@@ -4,13 +4,15 @@ from flask import request
 from flask_api import FlaskAPI
 
 import config
-import handlers
+from handlers import ServiceHandler, UserHandler, handle_error
 from utils import utils
 
 app = FlaskAPI(__name__)
 # terra_bot = learnerbot.TerraBotTrainer()
 url = "{0}/{1}".format((config.api_url + config.api_version), "")
-service_handler = handlers.ServiceHandler()
+service_handler = ServiceHandler()
+user_handler = UserHandler()
+
 
 @app.route(url, methods=['GET'])
 def bot():
@@ -26,7 +28,6 @@ def bot():
                     "time": datetime.datetime.now(),
                     "message": config.default_message,
                 }}
-
 
 
 @app.route(url + "listen", methods=['POST'])
@@ -52,7 +53,7 @@ def create_service():
     :return: service_id
     """
     if not request.data:
-        response = service_handler.handle_service_error(error_message="NO_DATA")
+        response = handle_error(error_type="NO_DATA")
         return response
     else:
         response = service_handler.create_service(request.data)
@@ -62,6 +63,26 @@ def create_service():
 @app.route(url + "get-service", methods=["GET"])
 def get_service():
     response = service_handler.get_service(id=request.args.get("service_id"))
+    return response
+
+
+@app.route(url + "create-user", methods=["POST"])
+def create_user():
+    """
+       Creates a service.
+       :return: service_id
+       """
+    if not request.data:
+        response = handle_error(error_type="NO_DATA")
+        return response
+    else:
+        response = user_handler.create_user(request.data)
+        return response
+
+
+@app.route(url + "get-user", methods=["GET"])
+def get_user():
+    response = user_handler.get_user(id=request.args.get("user_id"))
     return response
 
 
