@@ -6,7 +6,6 @@ from flask_api import FlaskAPI
 from bot.handlers import ServiceHandler, UserHandler, handle_error
 from bot.trainers import Trainer, handle_training_error
 app = FlaskAPI(__name__)
-# terra_bot = learnerbot.TerraBotTrainer()
 url = "{0}/{1}".format((config.api_url + config.api_version), "")
 service_handler = ServiceHandler()
 user_handler = UserHandler()
@@ -80,6 +79,10 @@ def create_user():
 
 @app.route(url + "get-user", methods=["GET"])
 def get_user():
+    """"
+    Gets a user based on provided id.
+    :return: user details
+    """
     response = user_handler.get_user(id=request.args.get("user_id"))
     return response
 

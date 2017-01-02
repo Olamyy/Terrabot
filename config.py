@@ -11,5 +11,6 @@ ERROR_MESSAGES = {
     "NO_DATA_ERROR": "No data passed through. Pass some data",
     "INVALID_SERVICE": "Invalid service ID. Could not get service",
     "INVALID_USER": "Invalid user ID. Could not get user",
-    'UNABLE_TO_CREATE': "Unable to create the required service or user"
+    'UNABLE_TO_CREATE': "Unable to create the required service or user",
+    'INVALID_TYPE': "Invalid object type specified. {0} is not of type {1}"
 }
