@@ -1,12 +1,6 @@
-import datetime
-import pprint
-
-import pymongo
-from bson import ObjectId
 from pymodm import connect, MongoModel, fields
 
 client = connect('mongodb://localhost:27017/terrabot')
-from pymongo import MongoClient
 
 
 class Services(MongoModel):
