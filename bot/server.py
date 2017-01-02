@@ -1,12 +1,10 @@
 import datetime
-
+import config
+from utils import utils
 from flask import request
 from flask_api import FlaskAPI
-
-import config
-from handlers import ServiceHandler, UserHandler, handle_error
-from utils import utils
-
+from bot.handlers import ServiceHandler, UserHandler, handle_error
+from bot.trainers import Trainer, handle_training_error
 app = FlaskAPI(__name__)
 # terra_bot = learnerbot.TerraBotTrainer()
 url = "{0}/{1}".format((config.api_url + config.api_version), "")
@@ -85,6 +83,14 @@ def get_user():
     response = user_handler.get_user(id=request.args.get("user_id"))
     return response
 
+
+@app.route(url + "train", methods=["POST"])
+def train_bot():
+    trainer = Trainer()
+    if not request.data:
+        return handle_error(error_type="NO_DATA")
+    else:
+        response = trainer.init_training(request.data)
 
 if __name__ == "__main__":
     app.run(host=config.host, port=5000, debug=True)
