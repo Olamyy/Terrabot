@@ -1,7 +1,8 @@
 from pymodm import connect, MongoModel, fields
 
-client = connect('mongodb://localhost:27017/terrabot')
+import config
 
+client = connect('{0}{1}'.format(config.db_uri, config.db_name))
 
 class Services(MongoModel):
     service_id = fields.ObjectIdField(verbose_name="Service ID", primary_key=True)
@@ -18,6 +19,17 @@ class Users(MongoModel):
     username = fields.CharField(verbose_name="User Name", max_length=50)
     service_registered_for = fields.ObjectIdField(verbose_name="Service ID")
     created_on = fields.DateTimeField(verbose_name="Date of user creation")
+
+
+class Train(MongoModel):
+    training_id = fields.ObjectIdField(primary_key=True)
+    service_id = fields.ObjectIdField()
+    user_id = fields.ObjectIdField()
+    training_data = fields.DictField()
+#
+# test = Users.objects.all()
+# print(list(test))
+
 
 # #
 # insert = Users(

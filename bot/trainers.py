@@ -34,11 +34,8 @@ def json_file_reader(file):
         data = json.load(file_data)
     return data
 
-# a = json_file_reader(file)
-#
-# print(a)
-def json_reader(conversation):
-    pass
+a = json_file_reader(file="/Downloads/pepperoni-app-kit/node_modules/react-native-mock/package.json")
+print(a['_npmUser']['name'])
 
 
 class JSONTrainer(Trainer):
@@ -58,14 +55,20 @@ class JSONTrainer(Trainer):
         if path.isfile(conversation):
             data = json_file_reader(conversation)
             if data:
-                pass
+                statement = data["statement"]
+                response = data["response"]
+                parameters = data["parameters"]
+                if isinstance(list, response):
+                    statement == self.get_or_create(te)
+                    logic_adapter
+
         else:
             try:
                 json.loads(conversation)
             except ValueError as error:
                 raise Exception("{0}".format(error))
             else:
-                self.storage.update(conversation, force=True)
+                analyze_json(conversation)
 
 
 class BotTrainer(Trainer):

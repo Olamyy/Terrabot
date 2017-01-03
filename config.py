@@ -1,5 +1,6 @@
 log_file = '../log.log'
 db_name = 'terrabot'
+db_uri = "mongodb://localhost:27017/"
 server_port = 8000
 default_message = "Hi, I'm TerraBot"
 bot_name = "TerraBot"
@@ -13,4 +14,13 @@ ERROR_MESSAGES = {
     "INVALID_USER": "Invalid user ID. Could not get user",
     'UNABLE_TO_CREATE': "Unable to create the required service or user",
     'INVALID_TYPE': "Invalid object type specified. {0} is not of type {1}"
+}
+
+TRAINER_CLASSES = {
+    "list": "ListTrainer",
+    "corpus": "chatterbot.trainers.ChatterBotCorpusTrainer",
+    "twitter": "chatterbot.trainers.TwitterTrainer",
+    "ubuntu": "chatterbot.trainers.UbuntuCorpusTrainer",
+    "facebook": "",
+    "custom" : ""
 }

@@ -1,5 +1,6 @@
 import datetime
 import config
+from bot.bot import Bot
 from utils import utils
 from flask import request
 from flask_api import FlaskAPI
@@ -89,11 +90,9 @@ def get_user():
 
 @app.route(url + "train", methods=["POST"])
 def train_bot():
-    trainer = Trainer()
-    if not request.data:
-        return handle_error(error_type="NO_DATA")
-    else:
-        response = trainer.init_training(request.data)
-
+    training_type = request.data["training_type"]
+    for_service = request.data["for_service"]
+    using = request.data["using"]
+    bot = Bot()
 if __name__ == "__main__":
     app.run(host=config.host, port=5000, debug=True)
