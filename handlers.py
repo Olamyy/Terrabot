@@ -5,7 +5,7 @@ from bson.objectid import ObjectId
 from pymongo import MongoClient
 
 import config
-from bot.models import Services, Users
+from models import Services, Users
 
 
 def handle_error(error_type):

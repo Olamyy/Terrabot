@@ -4,6 +4,7 @@ import config
 
 client = connect('{0}{1}'.format(config.db_uri, config.db_name))
 
+
 class Services(MongoModel):
     service_id = fields.ObjectIdField(verbose_name="Service ID", primary_key=True)
     service_name = fields.CharField(verbose_name="Service Name", mongo_name="service_name")

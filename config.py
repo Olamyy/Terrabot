@@ -15,12 +15,3 @@ ERROR_MESSAGES = {
     'UNABLE_TO_CREATE': "Unable to create the required service or user",
     'INVALID_TYPE': "Invalid object type specified. {0} is not of type {1}"
 }
-
-TRAINER_CLASSES = {
-    "list": "ListTrainer",
-    "corpus": "chatterbot.trainers.ChatterBotCorpusTrainer",
-    "twitter": "chatterbot.trainers.TwitterTrainer",
-    "ubuntu": "chatterbot.trainers.UbuntuCorpusTrainer",
-    "facebook": "",
-    "custom" : ""
-}

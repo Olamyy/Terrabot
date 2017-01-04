@@ -1,17 +1,29 @@
 import datetime
-import config
-from bot.bot import Bot
-from utils import utils
+
 from flask import request
+from flask.views import MethodView
 from flask_api import FlaskAPI
-from bot.handlers import ServiceHandler, UserHandler, handle_error
-from bot.trainers import Trainer, handle_training_error
+
+import config
+from bot import Bot
+from handlers import ServiceHandler, UserHandler, handle_error
+from utils import utils
+from flask.ext.autodoc import Autodoc
+
+
 app = FlaskAPI(__name__)
 url = "{0}/{1}".format((config.api_url + config.api_version), "")
 service_handler = ServiceHandler()
 user_handler = UserHandler()
+autodoc = Autodoc(app)
 
 
+@app.route(url + 'documentation')
+def documentation():
+    return autodoc.html()
+
+
+@autodoc.doc()
 @app.route(url, methods=['GET'])
 def bot():
     """
@@ -41,7 +53,7 @@ def listen():
         return utils.get_response_data(status="failure", error_or_sucess_message="Incomplete data sent.")
     else:
         return
-        return  utils.get_response_data(status="failure", error_or_sucess_message=request.data["message"])
+        return utils.get_response_data(status="failure", error_or_sucess_message=request.data["message"])
 
 
 @app.route(url + "create-service", methods=["POST"])
@@ -88,11 +100,27 @@ def get_user():
     return response
 
 
-@app.route(url + "train", methods=["POST"])
-def train_bot():
-    training_type = request.data["training_type"]
-    for_service = request.data["for_service"]
-    using = request.data["using"]
-    bot = Bot()
+class Trainers(MethodView, Bot):
+    def __init__(self):
+        super(Trainers, self).__init__()
+
+    def get(self):
+        return "Yes"
+
+    def post(self):
+        if request.data["using"]:
+            using = request.data["using"]
+        else:
+            using = request.files['file']
+        data = {
+            "training_type": request.data["training_type"],
+            "service": request.data["service"],
+            "using": using,
+        }
+        # return data
+        self.train(data)
+
+app.add_url_rule(url + "train", view_func=Trainers.as_view('train'))
+
 if __name__ == "__main__":
     app.run(host=config.host, port=5000, debug=True)

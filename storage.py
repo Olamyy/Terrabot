@@ -2,7 +2,6 @@ from chatterbot.storage import MongoDatabaseAdapter
 from pymongo import MongoClient
 
 import config
-from bot.models import Services, Users, client
 
 
 class MongoStorageAdapter(MongoDatabaseAdapter):
