@@ -1,29 +1,34 @@
+import os
+
+import chatterbot
+
 import datetime
 
 from flask import request
 from flask.views import MethodView
 from flask_api import FlaskAPI
-
+from werkzeug import secure_filename
 import config
 from bot import Bot
 from handlers import ServiceHandler, UserHandler, handle_error
 from utils import utils
-from flask.ext.autodoc import Autodoc
-
 
 app = FlaskAPI(__name__)
 url = "{0}/{1}".format((config.api_url + config.api_version), "")
 service_handler = ServiceHandler()
 user_handler = UserHandler()
-autodoc = Autodoc(app)
+
+app.config['UPLOAD_FOLDER'] = 'uploads/'
+# These are the extension that we are accepting to be uploaded
+app.config['ALLOWED_EXTENSIONS'] = {'json', 'csv'}
 
 
-@app.route(url + 'documentation')
-def documentation():
-    return autodoc.html()
+# For a given file, return whether it's an allowed type or not
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in app.config['ALLOWED_EXTENSIONS']
 
 
-@autodoc.doc()
 @app.route(url, methods=['GET'])
 def bot():
     """
@@ -90,37 +95,45 @@ def create_user():
         return response
 
 
-@app.route(url + "get-user", methods=["GET"])
-def get_user():
-    """"
-    Gets a user based on provided id.
-    :return: user details
-    """
-    response = user_handler.get_user(id=request.args.get("user_id"))
-    return response
-
-
-class Trainers(MethodView, Bot):
+class FileTraining(MethodView, Bot):
     def __init__(self):
-        super(Trainers, self).__init__()
+        super(FileTraining, self).__init__()
 
     def get(self):
-        return "Yes"
+        return handle_error(error_type="INVALID_METHOD")
 
     def post(self):
-        if request.data["using"]:
-            using = request.data["using"]
+        if not request.files:
+            response = handle_error(error_type="NO_DATA")
+            return response
         else:
-            using = request.files['file']
-        data = {
-            "training_type": request.data["training_type"],
-            "service": request.data["service"],
-            "using": using,
-        }
-        # return data
-        self.train(data)
+            training_file = request.files['file']
+            if training_file and allowed_file(training_file.filename):
+                filename = secure_filename(training_file.filename)
+                training_file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                return self.init_training_file(training_file)
 
-app.add_url_rule(url + "train", view_func=Trainers.as_view('train'))
+
+app.add_url_rule(url + "file-training", view_func=FileTraining.as_view('file-train'))
+
+
+class ChatTrainer(MethodView, Bot):
+    def __init__(self):
+        super(ChatTrainer, self).__init__()
+
+    def get(self):
+        return handle_error(error_type="INVALID_METHOD")
+
+    def post(self):
+            data = {
+                "service_id": request.data['service_id'],
+                "message": request.data["message"],
+                "response": request.data["response"]
+            }
+            return self.train(data, training_type="chat")
+
+app.add_url_rule(url + "chat-training", view_func=ChatTrainer.as_view('chat-train'))
+
 
 if __name__ == "__main__":
     app.run(host=config.host, port=5000, debug=True)

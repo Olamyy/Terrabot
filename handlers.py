@@ -4,6 +4,7 @@ from bson.json_util import dumps
 from bson.objectid import ObjectId
 from pymongo import MongoClient
 
+import chatterbot
 import config
 from models import Services, Users
 

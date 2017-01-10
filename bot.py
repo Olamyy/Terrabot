@@ -7,12 +7,11 @@ class Bot:
     def __init__(self):
         self.chatterbot = ChatBot(
             name="Terrabot",
-            storage_adapter="chatterbot.storage.JsonFileStorageAdapter",
+            storage_adapter="chatterbot.storage.MongoDatabaseAdapter",
             logic_adapters=[
                 'chatterbot.logic.BestMatch'
             ],
-            output_adapter='chatterbot.output.TerminalAdapter',
-            database='chatterbot-database'
+            database='terrabot'
         )
 
         self.trainer_classes = {
@@ -27,29 +26,22 @@ class Bot:
     def handle_response(self, data=None):
         return {
             "status": "success",
+            "service_id": data["service_id"],
             "response": {
-                "training_details": data,
-                "message": "Trained bot using {0}. Learnt {1} new things".format(data["using"], 5)
+                "training_details": "[{0} : {1}]".format(data['message'], data['response']),
+                "message": "Trained bot... Learnt {} new things".format(len(data))
             }
         }
 
-    def train(self, data):
-        training_type = data["training_type"]
-        using = data["using"]
-        # @Todo: Do more with the data provided
-        # @Todo: Conviniently use the data passed be it file or url
-        if isinstance(using, str):
-            self.prep_url(data["using"])
-        else:
-            using = "file"
-            self.prep_url(using)
-
-        trainer = self.trainer_classes[training_type]
-        self.chatterbot.set_trainer(trainer)
-        # self.train(using)
-        return self.handle_response(data)
-
-    def prep_url(self, param):
+    def init_training_file(self, data):
         pass
 
-
+    def train(self, data, training_type=None):
+        if training_type == "chat":
+            self.chatterbot.set_trainer(ListTrainer)
+            for key, values in data.iteritems:
+                self.chatterbot.train((data['message'], data['response']))
+            return self.handle_response(data)
+        else:
+            #File Training
+            pass

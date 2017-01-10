@@ -34,8 +34,9 @@ def json_file_reader(file):
         data = json.load(file_data)
     return data
 
-a = json_file_reader(file="/Downloads/pepperoni-app-kit/node_modules/react-native-mock/package.json")
-print(a['_npmUser']['name'])
+
+def analyze_json(conversation):
+    pass
 
 
 class JSONTrainer(Trainer):
@@ -59,8 +60,9 @@ class JSONTrainer(Trainer):
                 response = data["response"]
                 parameters = data["parameters"]
                 if isinstance(list, response):
-                    statement == self.get_or_create(te)
-                    logic_adapter
+                    pass
+                    # statement == self.get_or_create(te)
+                    # logic_adapter
 
         else:
             try:

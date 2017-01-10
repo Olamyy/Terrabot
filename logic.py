@@ -3,7 +3,7 @@ from chatterbot.logic import LogicAdapter
 
 class TheBotLogic(LogicAdapter):
     def __init__(self, **kwargs):
-        super(TheBotLogic, self).__init__(kwargs)
+        super(TheBotLogic, self).__init__()
 
     def can_process(self, statement):
         return True
